@@ -1,12 +1,12 @@
 import React from 'react';
 import Experts from '../Experts/Experts';
 import Services from '../Services/Services';
-import Carousel from '../Carousel/Carousel';
+import Slider from '../Slider/Slider';
 
 const Home = () => {
     return (
         <>
-            <Carousel></Carousel>
+            <Slider></Slider>
             <Services></Services>
             <Experts></Experts>
         </>
