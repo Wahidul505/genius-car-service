@@ -1,16 +1,32 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth';
+import auth from '../../../firebase.init';
 
 const Register = () => {
+    const [displayError, setDisplayError] = useState('');
     const navigate = useNavigate();
-    const handleRegister = e =>{
+    const [
+        createUserWithEmailAndPassword,
+        user,
+        loading,
+        error,
+    ] = useCreateUserWithEmailAndPassword(auth);
+    const handleRegister = e => {
         e.preventDefault();
         const name = e.target.name.value;
         const email = e.target.email.value;
         const password = e.target.password.value;
         const confirmPassword = e.target.confirm_password.value;
-        console.log(name, email, password, confirmPassword);
+        if (password !== confirmPassword) {
+            setDisplayError('Password did not matched');
+            return;
+        }
+        createUserWithEmailAndPassword(email, password);
     }
+    // if (user) {
+    //     navigate('/home');
+    // }
     return (
         <>
             <div className='w-2/3 md:w-1/2 mx-auto mt-12 bg-sky-300 p-6 rounded-lg'>
@@ -22,7 +38,7 @@ const Register = () => {
                     <input className='p-2 text-xl rounded' type="password" name="confirm_password" placeholder='Confirm Password' />
                     <input className='bg-sky-700 rounded-lg p-2 text-white text-xl cursor-pointer' type="submit" value="Register" />
                 </form>
-                <p className='mt-2'>Already have an Account? | <button onClick={()=>navigate('/login')} className='text-red-700'>Login</button></p>
+                <p className='mt-2'>Already have an Account? | <button onClick={() => navigate('/login')} className='text-red-700'>Login</button></p>
             </div>
         </>
     );
