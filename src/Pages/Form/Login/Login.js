@@ -1,5 +1,6 @@
+import { async } from '@firebase/util';
 import React, { useEffect, useRef, useState } from 'react';
-import { useAuthState, useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
+import { useAuthState, useSendPasswordResetEmail, useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
 import toast, { Toaster } from 'react-hot-toast';
 import { useLocation, useNavigate } from 'react-router-dom';
 import auth from '../../../firebase.init';
@@ -12,9 +13,10 @@ const Login = () => {
     const navigate = useNavigate('');
     const location = useLocation();
     const from = location.state?.from?.pathname || '';
+    const [sendPasswordResetEmail] = useSendPasswordResetEmail(auth);
     const [
         signInWithEmailAndPassword,
-         ,
+        ,
         loading,
         error
     ] = useSignInWithEmailAndPassword(auth);
@@ -24,6 +26,11 @@ const Login = () => {
         const email = emailRef.current.value;
         const password = passwordRef.current.value;
         signInWithEmailAndPassword(email, password);
+    };
+    const resetPassword = async () => {
+        const email = emailRef.current.value;
+        await sendPasswordResetEmail(email);
+        toast.success('Mail Sent');
     }
     useEffect(() => {
         if (error) {
@@ -36,7 +43,7 @@ const Login = () => {
         };
         if (user) {
             setDisplayError('');
-            toast.success('Logged In', {id:'success'});
+            toast.success('Logged In', { id: 'success' });
             navigate(from, { replace: true });
         };
     }, [from, navigate, user, error]);
@@ -57,7 +64,8 @@ const Login = () => {
                     }
                     <input className='bg-sky-700 rounded-lg p-2 text-white text-xl cursor-pointer' type="submit" value="Login" />
                 </form>
-                <p className='mt-2'>New to Genius Car Service? | <button onClick={() => navigate('/register')} className='text-red-700'>Register</button></p>
+                <p className='mt-2'>Forgot Password? | <button onClick={resetPassword} className='text-blue-700'>Reset</button></p>
+                <p className='mt-2'>New to Genius Car Service? | <button onClick={() => navigate('/register')} className='text-blue-700'>Register</button></p>
                 <SocialLogin />
             </div>
         </>
