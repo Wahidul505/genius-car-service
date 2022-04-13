@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth';
 import auth from '../../../firebase.init';
+import SocialLogin from '../SocialLogin/SocialLogin';
 
 const Register = () => {
     const [displayError, setDisplayError] = useState('');
@@ -36,8 +37,8 @@ const Register = () => {
     }, [navigate, user, error]);
     return (
         <>
-            <div className='w-2/3 md:w-1/2 mx-auto mt-12 bg-sky-300 p-6 rounded-lg'>
-                <h1 className='text-3xl text-center mb-6'>REGISTER</h1>
+            <div className='w-2/3 md:w-1/2 mx-auto mt-12 bg-gray-300 font-semibold p-6 rounded-lg'>
+                <h1 className='text-3xl text-center mb-6 text-sky-700'>REGISTER</h1>
                 <form onSubmit={handleRegister} className='flex flex-col gap-4'>
                     <input className='p-2 text-xl rounded' type="text" name="name" placeholder='Your Name' />
                     <input className='p-2 text-xl rounded' type="email" name="email" placeholder='Your Email' />
@@ -50,6 +51,7 @@ const Register = () => {
                     <input className='bg-sky-700 rounded-lg p-2 text-white text-xl cursor-pointer' type="submit" value="Register" />
                 </form>
                 <p className='mt-2'>Already have an Account? | <button onClick={() => navigate('/login')} className='text-red-700'>Login</button></p>
+                <SocialLogin />
             </div>
         </>
     );
