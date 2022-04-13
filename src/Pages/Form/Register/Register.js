@@ -24,9 +24,11 @@ const Register = () => {
         }
         createUserWithEmailAndPassword(email, password);
     }
-    // if (user) {
-    //     navigate('/home');
-    // }
+    useEffect(() => {
+        if (user) {
+            navigate('/home');
+        }
+    }, [navigate, user])
     return (
         <>
             <div className='w-2/3 md:w-1/2 mx-auto mt-12 bg-sky-300 p-6 rounded-lg'>

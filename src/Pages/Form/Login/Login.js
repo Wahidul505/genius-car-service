@@ -1,16 +1,29 @@
-import React, { useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useRef } from 'react';
+import { useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
+import { useLocation, useNavigate } from 'react-router-dom';
+import auth from '../../../firebase.init';
 
 const Login = () => {
     const emailRef = useRef('');
     const passwordRef = useRef('');
     const navigate = useNavigate('');
-    const handleLogin = e =>{
+    const location = useLocation();
+    const from = location.state?.from?.pathname || '';
+    const [
+        signInWithEmailAndPassword,
+        user
+    ] = useSignInWithEmailAndPassword(auth);
+    const handleLogin = e => {
         e.preventDefault();
         const email = emailRef.current.value;
         const password = passwordRef.current.value;
-        console.log(email, password);
+        signInWithEmailAndPassword(email, password);
     }
+    useEffect(()=>{
+        if(user){
+            navigate(from, {replace:true});
+        }
+    },[from, navigate, user]);
     return (
         <>
             <div className='w-2/3 md:w-1/2 mx-auto mt-12 bg-sky-300 p-6 rounded-lg'>
@@ -20,7 +33,7 @@ const Login = () => {
                     <input ref={passwordRef} className='p-2 text-xl rounded' type="password" name="password" placeholder='Password' />
                     <input className='bg-sky-700 rounded-lg p-2 text-white text-xl cursor-pointer' type="submit" value="Login" />
                 </form>
-                <p className='mt-2'>New to Genius Car Service? | <button onClick={()=>navigate('/register')} className='text-red-700'>Register</button></p>
+                <p className='mt-2'>New to Genius Car Service? | <button onClick={() => navigate('/register')} className='text-red-700'>Register</button></p>
             </div>
         </>
     );

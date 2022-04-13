@@ -4,11 +4,18 @@ import logo from '../../../images/logo/logo.png';
 import './Header.css';
 import { HiOutlineMenuAlt3 } from 'react-icons/hi';
 import { MdClose } from 'react-icons/md';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import auth from '../../../firebase.init';
+import { signOut } from 'firebase/auth';
 
 const Header = () => {
     const [show, setShow] = useState(false);
     const [display, setDisplay] = useState('');
     const { pathname } = useLocation();
+    const [user] = useAuthState(auth);
+    const handleLogOut = () => {
+        signOut(auth);
+    }
     useEffect(() => {
         if (pathname === '/') {
             setDisplay('flex')
@@ -32,7 +39,12 @@ const Header = () => {
                 </div>
                 <NavLink to='/shop'>Shop</NavLink>
                 <NavLink to='/about'>About</NavLink>
-                <NavLink to='/login'>LogIn</NavLink>
+                {
+                    user ?
+                        <button onClick={handleLogOut}>LogOut</button>
+                        :
+                        <NavLink to='/login'>LogIn</NavLink>
+                }
             </nav>
         </div>
     );
