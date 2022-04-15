@@ -1,13 +1,16 @@
-import { async } from '@firebase/util';
 import React, { useEffect, useRef, useState } from 'react';
 import { useAuthState, useSendPasswordResetEmail, useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
 import toast, { Toaster } from 'react-hot-toast';
 import { useLocation, useNavigate } from 'react-router-dom';
 import auth from '../../../firebase.init';
+import Loading from '../../Shared/Loading/Loading';
 import SocialLogin from '../SocialLogin/SocialLogin';
+import {AiFillEyeInvisible} from 'react-icons/ai';
+import {AiFillEye} from 'react-icons/ai'; 
 
 const Login = () => {
     const [displayError, setDisplayError] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
     const emailRef = useRef('');
     const passwordRef = useRef('');
     const navigate = useNavigate('');
@@ -29,8 +32,13 @@ const Login = () => {
     };
     const resetPassword = async () => {
         const email = emailRef.current.value;
-        await sendPasswordResetEmail(email);
-        toast.success('Mail Sent');
+        if (email) {
+            await sendPasswordResetEmail(email);
+            toast.success('Mail Sent');
+        }
+        else {
+            toast.error('Please, Give an Email');
+        }
     }
     useEffect(() => {
         if (error) {
@@ -47,6 +55,9 @@ const Login = () => {
             navigate(from, { replace: true });
         };
     }, [from, navigate, user, error]);
+    if (loading) {
+        return <Loading />
+    }
     return (
         <>
             <Toaster
@@ -57,11 +68,12 @@ const Login = () => {
                 <h1 className='text-3xl text-center mb-6 text-sky-700 font-semibold'>LOG IN</h1>
                 <form onSubmit={handleLogin} className='flex flex-col gap-4'>
                     <input ref={emailRef} className='p-2 text-xl rounded' type="email" name="email" placeholder='Your Email' />
-                    <input ref={passwordRef} className='p-2 text-xl rounded' type="password" name="password" placeholder='Password' />
+                    <div className='text-xl rounded bg-white flex items-center justify-between'>
+                    <input className='w-5/6 p-2 rounded' ref={passwordRef} type={showPassword? "text" : "password"} name="password" placeholder='Password' /><span onClick={()=>setShowPassword(!showPassword)} className='mr-2 cursor-pointer'>{
+                        showPassword ? <AiFillEye /> : <AiFillEyeInvisible />
+                    }</span>
+                    </div>
                     <p className='text-red-500'>{displayError}</p>
-                    {
-                        loading && <p>Loading...</p>
-                    }
                     <input className='bg-sky-700 rounded-lg p-2 text-white text-xl cursor-pointer' type="submit" value="Login" />
                 </form>
                 <p className='mt-2'>Forgot Password? | <button onClick={resetPassword} className='text-blue-700'>Reset</button></p>
