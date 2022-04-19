@@ -5,8 +5,9 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import auth from '../../../firebase.init';
 import Loading from '../../Shared/Loading/Loading';
 import SocialLogin from '../SocialLogin/SocialLogin';
-import {AiFillEyeInvisible} from 'react-icons/ai';
-import {AiFillEye} from 'react-icons/ai'; 
+import { AiFillEyeInvisible } from 'react-icons/ai';
+import { AiFillEye } from 'react-icons/ai';
+import PageTitle from '../../Shared/PageTitle/PageTitle';
 
 const Login = () => {
     const [displayError, setDisplayError] = useState('');
@@ -60,6 +61,7 @@ const Login = () => {
     }
     return (
         <>
+            <PageTitle title={'Login'} />
             <Toaster
                 position="top-center"
                 reverseOrder={false}
@@ -69,9 +71,9 @@ const Login = () => {
                 <form onSubmit={handleLogin} className='flex flex-col gap-4'>
                     <input ref={emailRef} className='p-2 text-xl rounded' type="email" name="email" placeholder='Your Email' />
                     <div className='text-xl rounded bg-white flex items-center justify-between'>
-                    <input className='w-5/6 p-2 rounded' ref={passwordRef} type={showPassword? "text" : "password"} name="password" placeholder='Password' /><span onClick={()=>setShowPassword(!showPassword)} className='mr-2 cursor-pointer'>{
-                        showPassword ? <AiFillEye /> : <AiFillEyeInvisible />
-                    }</span>
+                        <input className='w-5/6 p-2 rounded' ref={passwordRef} type={showPassword ? "text" : "password"} name="password" placeholder='Password' /><span onClick={() => setShowPassword(!showPassword)} className='mr-2 cursor-pointer'>{
+                            showPassword ? <AiFillEye /> : <AiFillEyeInvisible />
+                        }</span>
                     </div>
                     <p className='text-red-500'>{displayError}</p>
                     <input className='bg-sky-700 rounded-lg p-2 text-white text-xl cursor-pointer' type="submit" value="Login" />

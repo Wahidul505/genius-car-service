@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useCreateUserWithEmailAndPassword, useUpdateProfile } from 'react-firebase-hooks/auth';
 import auth from '../../../firebase.init';
 import SocialLogin from '../SocialLogin/SocialLogin';
-import { async } from '@firebase/util';
 import Loading from '../../Shared/Loading/Loading';
+import PageTitle from '../../Shared/PageTitle/PageTitle';
 
 const Register = () => {
     const [displayError, setDisplayError] = useState('');
@@ -16,7 +16,7 @@ const Register = () => {
         loading,
         error,
     ] = useCreateUserWithEmailAndPassword(auth, { sendEmailVerification: true });
-    const [updateProfile, updating, updateError] = useUpdateProfile(auth);
+    const [updateProfile, updating] = useUpdateProfile(auth);
     const handleRegister = async e => {
         e.preventDefault();
         const name = e.target.name.value;
@@ -47,6 +47,7 @@ const Register = () => {
     }
     return (
         <>
+            <PageTitle title={'Signup'} />
             <div className='w-2/3 md:w-1/2 mx-auto mt-12 bg-gray-300 font-semibold p-6 rounded-lg'>
                 <h1 className='text-3xl text-center mb-6 text-sky-700'>REGISTER</h1>
                 <form onSubmit={handleRegister} className='flex flex-col gap-4'>
