@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useAuthState, useSendPasswordResetEmail, useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import { useLocation, useNavigate } from 'react-router-dom';
 import auth from '../../../firebase.init';
 import Loading from '../../Shared/Loading/Loading';
@@ -8,6 +8,8 @@ import SocialLogin from '../SocialLogin/SocialLogin';
 import { AiFillEyeInvisible } from 'react-icons/ai';
 import { AiFillEye } from 'react-icons/ai';
 import PageTitle from '../../Shared/PageTitle/PageTitle';
+import { async } from '@firebase/util';
+import axios from 'axios';
 
 const Login = () => {
     const [displayError, setDisplayError] = useState('');
@@ -25,11 +27,13 @@ const Login = () => {
         error
     ] = useSignInWithEmailAndPassword(auth);
     const [user] = useAuthState(auth);
-    const handleLogin = e => {
+    const handleLogin = async e => {
         e.preventDefault();
         const email = emailRef.current.value;
         const password = passwordRef.current.value;
-        signInWithEmailAndPassword(email, password);
+        await signInWithEmailAndPassword(email, password);
+        const { data } = await axios.post('https://sheltered-savannah-99198.herokuapp.com/access', {email});
+        localStorage.setItem('token', data.token);
     };
     const resetPassword = async () => {
         const email = emailRef.current.value;
@@ -62,10 +66,6 @@ const Login = () => {
     return (
         <>
             <PageTitle title={'Login'} />
-            <Toaster
-                position="top-center"
-                reverseOrder={false}
-            />
             <div className='w-2/3 md:w-1/2 mx-auto mt-12 bg-gray-300 p-6 rounded-lg'>
                 <h1 className='text-3xl text-center mb-6 text-sky-700 font-semibold'>LOG IN</h1>
                 <form onSubmit={handleLogin} className='flex flex-col gap-4'>
