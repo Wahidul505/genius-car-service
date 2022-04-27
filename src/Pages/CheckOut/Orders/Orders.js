@@ -5,6 +5,7 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import auth from '../../../firebase.init';
+import OrderDetail from '../OrderDetail/OrderDetail';
 
 const Orders = () => {
     const navigate = useNavigate();
@@ -26,7 +27,7 @@ const Orders = () => {
                 console.log(error.message);
                 if (error.response.status === 401 || error.response.status === 403) {
                     signOut(auth);
-                    toast.error("You don't have access in order", {id: 'unauthorized'});
+                    toast.error("You don't have access in order", { id: 'unauthorized' });
                     navigate('/login')
                 }
             }
@@ -34,8 +35,13 @@ const Orders = () => {
         getOrders();
     }, [email, navigate])
     return (
-        <div>
-            <h1>Your Order: {orders.length}</h1>
+        <div className='flex flex-col gap-3 mt-20'>
+            {
+                orders.map(order => <OrderDetail
+                    key={order._id}
+                    order={order}
+                />)
+            }
         </div>
     );
 };

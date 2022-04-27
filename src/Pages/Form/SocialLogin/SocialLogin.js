@@ -5,10 +5,12 @@ import { BsGithub } from 'react-icons/bs';
 import { useSignInWithGithub, useSignInWithGoogle } from 'react-firebase-hooks/auth';
 import auth from '../../../firebase.init';
 import { useLocation, useNavigate } from 'react-router-dom';
+import useToken from '../../../hooks/useToken';
 
 const SocialLogin = () => {
     const [signInWithGoogle, userGl, loadingGl, errorGl] = useSignInWithGoogle(auth);
     const [signInWithGithub, userGh, loadingGh, errorGh] = useSignInWithGithub(auth);
+    const [token] = useToken(userGl || userGh);
     const navigate = useNavigate();
     const location = useLocation();
     const from = location.state?.from?.pathname || '';
@@ -24,10 +26,10 @@ const SocialLogin = () => {
         </div>
     }
     useEffect(() => {
-        if (userGl || userGh) {
+        if (token) {
             navigate(from, { replace: true });
         }
-    }, [from, navigate, userGh, userGl]);
+    }, [from, navigate, token]);
     return (
         <div>
             <div className='my-3'>

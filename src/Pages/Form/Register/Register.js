@@ -5,6 +5,7 @@ import auth from '../../../firebase.init';
 import SocialLogin from '../SocialLogin/SocialLogin';
 import Loading from '../../Shared/Loading/Loading';
 import PageTitle from '../../Shared/PageTitle/PageTitle';
+import useToken from '../../../hooks/useToken';
 
 const Register = () => {
     const [displayError, setDisplayError] = useState('');
@@ -17,6 +18,7 @@ const Register = () => {
         error,
     ] = useCreateUserWithEmailAndPassword(auth, { sendEmailVerification: true });
     const [updateProfile, updating] = useUpdateProfile(auth);
+    const [token] = useToken(user);
     const handleRegister = async e => {
         e.preventDefault();
         const name = e.target.name.value;
@@ -32,7 +34,7 @@ const Register = () => {
         await updateProfile({ displayName: name });
     };
     useEffect(() => {
-        if (user) {
+        if (token) {
             navigate('/home');
         }
         if (error) {
@@ -40,7 +42,7 @@ const Register = () => {
                 setDisplayError('Email already in use');
             }
         }
-    }, [navigate, user, error]);
+    }, [navigate, token, error]);
 
     if (loading || updating) {
         return <Loading />

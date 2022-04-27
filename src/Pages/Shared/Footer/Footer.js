@@ -8,7 +8,7 @@ const Footer = () => {
         setYear(currentYear);
     },[])
     return (
-        <footer className='text-center text-gray-600 mt-24'>
+        <footer className='text-center text-gray-600 mb-6 mt-20'>
             <small>Copyright collected © {year}</small>
         </footer>
     );

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useAuthState, useSendPasswordResetEmail, useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
+import { useSendPasswordResetEmail, useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
 import toast from 'react-hot-toast';
 import { useLocation, useNavigate } from 'react-router-dom';
 import auth from '../../../firebase.init';
@@ -8,8 +8,7 @@ import SocialLogin from '../SocialLogin/SocialLogin';
 import { AiFillEyeInvisible } from 'react-icons/ai';
 import { AiFillEye } from 'react-icons/ai';
 import PageTitle from '../../Shared/PageTitle/PageTitle';
-import { async } from '@firebase/util';
-import axios from 'axios';
+import useToken from '../../../hooks/useToken';
 
 const Login = () => {
     const [displayError, setDisplayError] = useState('');
@@ -22,18 +21,16 @@ const Login = () => {
     const [sendPasswordResetEmail] = useSendPasswordResetEmail(auth);
     const [
         signInWithEmailAndPassword,
-        ,
+        user,
         loading,
         error
     ] = useSignInWithEmailAndPassword(auth);
-    const [user] = useAuthState(auth);
+    const [token] = useToken(user);
     const handleLogin = async e => {
         e.preventDefault();
         const email = emailRef.current.value;
         const password = passwordRef.current.value;
         await signInWithEmailAndPassword(email, password);
-        const { data } = await axios.post('https://sheltered-savannah-99198.herokuapp.com/access', {email});
-        localStorage.setItem('token', data.token);
     };
     const resetPassword = async () => {
         const email = emailRef.current.value;
@@ -54,12 +51,12 @@ const Login = () => {
                 setDisplayError('Invalid User');
             }
         };
-        if (user) {
+        if (token) {
             setDisplayError('');
             toast.success('Logged In', { id: 'success' });
             navigate(from, { replace: true });
         };
-    }, [from, navigate, user, error]);
+    }, [from, navigate, token, error]);
     if (loading) {
         return <Loading />
     }
